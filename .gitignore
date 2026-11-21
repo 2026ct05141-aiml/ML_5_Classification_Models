@@ -3,6 +3,5 @@ __pycache__/
 .venv/
 venv/
 .ipynb_checkpoints/
-data/*.xlsx
 *.joblib
 Models/executable_models/*.joblib
