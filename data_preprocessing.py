@@ -2,7 +2,7 @@ from pathlib import Path
 
 import matplotlib
 matplotlib.use("Agg") 
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as plot
 from matplotlib.cbook import boxplot_stats
 import seaborn as sns
 
@@ -44,7 +44,7 @@ class BoxplotOutlierClipper(BaseEstimator, TransformerMixin):
 
 
 def _ensure_resources_module() -> Path:
-    """Creates the resources/ module folder and __init__.py if not already present."""
+
     RESOURCES_MODULE.mkdir(parents=True, exist_ok=True)
     init_file = RESOURCES_MODULE / "__init__.py"
     if not init_file.exists():
@@ -53,7 +53,8 @@ def _ensure_resources_module() -> Path:
 
 
 def _save_missing_and_class_plot(rain_dataset_raw: pd.DataFrame, target_col: str, RESOURCES_MODULE: Path):
-    fig, axes = plt.subplots(1, 2, figsize=(15, 5.5))
+
+    fig, axes = plot.subplots(1, 2, figsize=(15, 5.5))
 
     missing_pct = rain_dataset_raw.isnull().mean() * 100
     missing_pct = missing_pct[missing_pct > 0].sort_values(ascending=True)
@@ -70,10 +71,10 @@ def _save_missing_and_class_plot(rain_dataset_raw: pd.DataFrame, target_col: str
         axes[1].text(i, val + 1200, f"{val:,}\n({val / len(rain_dataset_raw) * 100:.2f}%)", ha="center", fontweight="bold")
     axes[1].set_ylim(0, max(counts.values) * 1.18)
 
-    plt.tight_layout()
+    plot.tight_layout()
     out_path = RESOURCES_MODULE / "missing_and_class_distribution.png"
-    plt.savefig(out_path, dpi=150)
-    plt.close(fig)
+    plot.savefig(out_path, dpi=150)
+    plot.close(fig)
     print(f"Saved chart -> '{out_path}'")
 
 
@@ -84,7 +85,7 @@ def _save_correlation_heatmap(rain_dataset_before: pd.DataFrame, rain_dataset_af
     corr_before = rain_dataset_before[num_before].corr()
     corr_after = rain_dataset_after[num_after].corr()
 
-    fig, axes = plt.subplots(1, 2, figsize=(20, 8.5))
+    fig, axes = plot.subplots(1, 2, figsize=(20, 8.5))
 
     mask1 = np.triu(np.ones_like(corr_before, dtype=bool))
     sns.heatmap(
@@ -100,10 +101,10 @@ def _save_correlation_heatmap(rain_dataset_before: pd.DataFrame, rain_dataset_af
     )
     axes[1].set_title("AFTER: Retained Numeric Features (Irrelevant/Redundant Dropped)", fontsize=11, fontweight="bold")
 
-    plt.tight_layout()
+    plot.tight_layout()
     out_path = RESOURCES_MODULE / "correlation_heatmap_before_after.png"
-    plt.savefig(out_path, dpi=150)
-    plt.close(fig)
+    plot.savefig(out_path, dpi=150)
+    plot.close(fig)
     print(f"Saved chart -> '{out_path}'")
 
 
@@ -123,33 +124,33 @@ def _detect_and_plot_boxplot_outliers(
         if n_outliers > 0:
             print(
                 f"  {st['label']:<15}: whiskers=[{st['whislo']:7.2f}, {st['whishi']:7.2f}] | "
-                f"outliers detected & capped = {n_outliers:,}"
+                f"outliers detected & clipped = {n_outliers:,}"
             )
 
     medians = X_train_raw[num_features].median()
     iqrs = (X_train_raw[num_features].quantile(0.75) - X_train_raw[num_features].quantile(0.25)).replace(0, 1)
 
-    rain_dataset_before_norm = (X_train_raw[num_features] - medians) / iqrs
-    capped_vals = Clipper.transform(X_train_raw[num_features].to_numpy())
-    rain_dataset_after_capped = pd.DataFrame(capped_vals, columns=num_features)
-    rain_dataset_after_norm = (rain_dataset_after_capped - medians) / iqrs
+    rain_dataset_before_normalization = (X_train_raw[num_features] - medians) / iqrs
+    clipped_vals = Clipper.transform(X_train_raw[num_features].to_numpy())
+    rain_dataset_after_clipped = pd.DataFrame(clipped_vals, columns=num_features)
+    rain_dataset_after_normalization = (rain_dataset_after_clipped - medians) / iqrs
 
-    fig, axes = plt.subplots(1, 2, figsize=(18, 7), sharey=True)
+    fig, axes = plot.subplots(1, 2, figsize=(18, 7), sharey=True)
 
-    sns.boxplot(data=rain_dataset_before_norm, orient="h", fliersize=2, color="#d95f02", ax=axes[0])
+    sns.boxplot(data=rain_dataset_before_normalization, orient="h", fliersize=2, color="#d95f02", ax=axes[0])
     axes[0].set_xlim(-5, 15)
     axes[0].set_title("BEFORE Outlier Adjustment: Training Set Box Plots (IQR-Scaled)", fontsize=11, fontweight="bold")
     axes[0].set_xlabel("IQR Units from Median (Fliers = Detected Outliers)")
 
-    sns.boxplot(data=rain_dataset_after_norm, orient="h", fliersize=2, color="#2b8cbe", ax=axes[1])
+    sns.boxplot(data=rain_dataset_after_normalization, orient="h", fliersize=2, color="#2b8cbe", ax=axes[1])
     axes[1].set_xlim(-5, 15)
     axes[1].set_title("AFTER Box-Plot Whisker Clipping: Outliers Adjusted", fontsize=11, fontweight="bold")
     axes[1].set_xlabel("IQR Units from Median (Clipped at Whisker Bounds)")
 
-    plt.tight_layout()
+    plot.tight_layout()
     out_path = RESOURCES_MODULE / "outliers_boxplot_before_after.png"
-    plt.savefig(out_path, dpi=150)
-    plt.close(fig)
+    plot.savefig(out_path, dpi=150)
+    plot.close(fig)
     print(f"Saved chart -> '{out_path}'")
 
 
@@ -261,7 +262,7 @@ def split_train_test_data(
     )
 
     print(
-        f"\nStratified 80:20 Split -> Train: {len(X_train_raw):,} rows ({y_train.mean() * 100:.2f}% positive), "
+        f"\n80:20 Split -> Train: {len(X_train_raw):,} rows ({y_train.mean() * 100:.2f}% positive), "
         f"Test: {len(X_test_raw):,} rows ({y_test.mean() * 100:.2f}% positive)"
     )
 
@@ -269,7 +270,7 @@ def split_train_test_data(
     test_rain_dataset = X_test_raw.copy()
     test_rain_dataset["RainTomorrow"] = y_test.values
     test_rain_dataset.to_csv(test_export_path, index=False)
-    print(f"Exported stratified test split to '{test_export_path}'.")
+    print(f"Exported test split to '{test_export_path}'.")
 
   
     preprocessor = preprocessor_pipeline(num_features, cat_features)

@@ -3,14 +3,10 @@ from Models.test_and_evaluate import main as run_test_and_evaluate
 
 
 def main():
-    print("====================================================================")
-    print("STEP 1: PREPROCESSING, MODEL TRAINING & ARTIFACT SERIALIZATION")
-    print("====================================================================")
+    print("Model Training")
     train_classification_models()
 
-    print("\n====================================================================")
-    print("STEP 2: SAVED MODEL EVALUATION, VISUALIZATION & EXTERNAL PREDICTION")
-    print("====================================================================")
+    print("Model Testing")
     run_test_and_evaluate()
 
 
