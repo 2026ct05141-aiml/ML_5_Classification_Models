@@ -27,6 +27,15 @@ Given daily meteorological observations across 49 weather stations, the objectiv
 
 * **GitHub Repository:** https://github.com/2026ct05141-aiml/ML_5_Classification_Models
 
+Steps to run:
+1. Download python and github
+2. Install python extension in VS Code and set environment to the environment path variable for python.exe.
+3. Clone the repository using the command git clone https://github.com/2026ct05141-aiml/ML_5_Classification_Models
+4. Install all required libraries via pip install -r requirements.txt
+5. Open main.py and run it. Ensure that data set is present in data folder before running. This will run both training and testing of all 5 classification models all in one shot
+6. All visualizations and metrics are present in resources folder/module. We can find the outputs or metrics in terminal also.
+
+
 ## d. Models Used
 1. Logistic Regression
 2. Decision Tree Classifier
